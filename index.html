@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulasi KUR BRI - 36 Bulan</title>
   
+  <!-- Tautan ke manifest.json untuk PWA -->
   <link rel="manifest" href="manifest.json">
+  
+  <!-- BARIS TAMBAHAN UNTUK FAVICON -->
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <!-- AKHIR BARIS TAMBAHAN -->
   
   <style>
     body {
@@ -70,7 +75,7 @@
         position: relative;
         padding-left: 50%;
         text-align: left;
-        word-break: break-word; /* Tetap pertahankan ini untuk angka panjang */
+        word-break: break-word;
       }
       td:before {
         position: absolute;
@@ -81,9 +86,7 @@
         white-space: nowrap;
         content: attr(data-label);
         font-weight: bold;
-        /* --- BARIS TAMBAHAN UNTUK FONT LABEL RESPONSIVE --- */
-        font-size: 0.8em; /* Membuat ukuran font label 80% dari ukuran normal */
-        /* --- AKHIR BARIS TAMBAHAN --- */
+        font-size: 0.8em;
       }
       td:first-child, td:nth-child(2) {
         text-align: left;
@@ -141,7 +144,7 @@
       const row = `
         <tr class="${classRow}">
           <td data-label="Bulan Ke">${i}</td>
-          <td data-label="Tanggal Jatuh Tempo">${jatampo.toLocaleDateString("id-ID")}</td>
+          <td data-label="Tanggal Jatuh Tempo">${jatuhTempo.toLocaleDateString("id-ID")}</td>
           <td data-label="Angsuran Pokok">${Math.round(angsuranPokok).toLocaleString("id-ID")}</td>
           <td data-label="Angsuran Bunga">${Math.round(angsuranBunga).toLocaleString("id-ID")}</td>
           <td data-label="Total Angsuran">${Math.round(totalAngsuran).toLocaleString("id-ID")}</td>
