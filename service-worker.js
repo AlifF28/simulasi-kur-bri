@@ -1,11 +1,46 @@
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js') // <-- Mencari file ini
-      .then(registration => {
-        console.log('Service Worker registered: ', registration);
+const CACHE_NAME = 'kur-simulasi-v1';
+const urlsToCache = [
+  './', // Cache index.html
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  // Tambahkan file CSS atau JS eksternal jika ada
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
       })
-      .catch(registrationError => {
-        console.log('Service Worker registration failed: ', registrationError);
-      });
-  });
-}
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});
+
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
