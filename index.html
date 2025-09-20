@@ -119,15 +119,8 @@
     const angsuranPokok = totalAngsuran - angsuranBunga;
 
     // --- BAGIAN PENTING UNTUK SISA PINJAMAN (BRIMO) ---
-    // Anda bisa mengisi objek ini dengan data sisa pinjaman aktual dari BRImo Anda.
-    // Kunci (key) adalah nomor bulan angsuran, nilai (value) adalah sisa pinjaman dalam angka (tanpa titik/koma).
-    // Contoh: { 4: 13462920, 7: 12000000, 10: 10500000 }
-    // Jika tidak ada data untuk bulan tertentu, kolom akan menampilkan "-"
     const customBrimoBalances = {
-      4: 13462920, // Contoh: Untuk angsuran bulan ke-4 (September 2025), sisa pinjaman di BRImo adalah 13.462.920
-      // Anda bisa menambahkan bulan lain di sini sesuai data BRImo Anda:
-      // 5: 13000000, // Misal untuk bulan ke-5 (Oktober 2025)
-      // 6: 12500000, // Misal untuk bulan ke-6 (November 2025)
+      3: 13462920, // Contoh: Untuk angsuran bulan ke-4 (September 2025), sisa pinjaman di BRImo adalah 13.462.920
     };
     // ---------------------------------------------
 
@@ -175,4 +168,5 @@
     }
   </script>
 </body>
+
 </html>
