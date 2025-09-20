@@ -70,9 +70,7 @@
         position: relative;
         padding-left: 50%;
         text-align: left;
-        /* --- BARIS TAMBAHAN UNTUK RESPONSIVITAS TEKS --- */
-        word-break: break-word; /* Memaksa teks panjang (angka) untuk memecah baris */
-        /* --- AKHIR BARIS TAMBAHAN --- */
+        word-break: break-word; /* Tetap pertahankan ini untuk angka panjang */
       }
       td:before {
         position: absolute;
@@ -83,6 +81,9 @@
         white-space: nowrap;
         content: attr(data-label);
         font-weight: bold;
+        /* --- BARIS TAMBAHAN UNTUK FONT LABEL RESPONSIVE --- */
+        font-size: 0.8em; /* Membuat ukuran font label 80% dari ukuran normal */
+        /* --- AKHIR BARIS TAMBAHAN --- */
       }
       td:first-child, td:nth-child(2) {
         text-align: left;
@@ -120,22 +121,50 @@
     const totalAngsuran = 456400; // Contoh total angsuran Anda
     const angsuranPokok = totalAngsuran - angsuranBunga;
 
-    // --- BAGIAN PENTING UNTUK SISA PINJAMAN (BRIMO) ---
     const customBrimoBalances = {
-      4: 13462920, // Contoh: Untuk angsuran bulan ke-4 (September 2025), sisa pinjaman di BRImo adalah 13.462.920
+      4: 13462920, 
     };
-    // ---------------------------------------------
 
     const tbody = document.getElementById("tabel-body");
     let sisaPokok = totalPinjaman;
 
     for (let i = 1; i <= tenor; i++) {
       const jatuhTempo = new Date(startDate);
-      jatuhTempo.setMonth(startDate.getMonth() + i - 1); // Mengatur tanggal jatuh tempo untuk setiap bulan
+      jatuhTempo.setMonth(startDate.getMonth() + i - 1);
 
       const sisaSetelah = sisaPokok - angsuranPokok;
       const classRow = jatuhTempo <= today ? "sudah-jatuh-tempo" : "belum-jatuh-tempo";
 
-      // Mendapatkan sisa pinjaman dari customBrimoBalances atau menampilkan "-"
       const sisaBrimoValue = customBrimoBalances[i];
-      const sisaBrimoDisplay = sisaBrimoValue !== undefined ? sisaBrimoValue.toL
+      const sisaBrimoDisplay = sisaBrimoValue !== undefined ? sisaBrimoValue.toLocaleString("id-ID") : "-";
+
+      const row = `
+        <tr class="${classRow}">
+          <td data-label="Bulan Ke">${i}</td>
+          <td data-label="Tanggal Jatuh Tempo">${jatampo.toLocaleDateString("id-ID")}</td>
+          <td data-label="Angsuran Pokok">${Math.round(angsuranPokok).toLocaleString("id-ID")}</td>
+          <td data-label="Angsuran Bunga">${Math.round(angsuranBunga).toLocaleString("id-ID")}</td>
+          <td data-label="Total Angsuran">${Math.round(totalAngsuran).toLocaleString("id-ID")}</td>
+          <td data-label="Sisa Pokok Setelah Bayar">${Math.round(sisaSetelah).toLocaleString("id-ID")}</td>
+          <td data-label="Sisa Pinjaman (BRImo Anda)">${sisaBrimoDisplay}</td>
+        </tr>
+      `;
+
+      tbody.innerHTML += row;
+      sisaPokok = sisaSetelah;
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registered: ', registration);
+          })
+          .catch(registrationError => {
+            console.log('Service Worker registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
