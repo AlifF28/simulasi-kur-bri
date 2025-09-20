@@ -2,10 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Penting untuk responsif di mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulasi KUR BRI - 36 Bulan</title>
   
-  <!-- Tautan ke manifest.json untuk PWA -->
   <link rel="manifest" href="manifest.json">
   
   <style>
@@ -47,10 +46,10 @@
       text-align: center;
     }
     .sudah-jatuh-tempo {
-      background-color: #d4edda; /* Hijau muda */
+      background-color: #d4edda;
     }
     .belum-jatuh-tempo {
-      background-color: #f8d7da; /* Merah muda */
+      background-color: #f8d7da;
     }
     @media (max-width: 768px) {
       table, thead, tbody, th, td, tr {
@@ -71,6 +70,9 @@
         position: relative;
         padding-left: 50%;
         text-align: left;
+        /* --- BARIS TAMBAHAN UNTUK RESPONSIVITAS TEKS --- */
+        word-break: break-word; /* Memaksa teks panjang (angka) untuk memecah baris */
+        /* --- AKHIR BARIS TAMBAHAN --- */
       }
       td:before {
         position: absolute;
@@ -136,40 +138,4 @@
 
       // Mendapatkan sisa pinjaman dari customBrimoBalances atau menampilkan "-"
       const sisaBrimoValue = customBrimoBalances[i];
-      const sisaBrimoDisplay = sisaBrimoValue !== undefined ? sisaBrimoValue.toLocaleString("id-ID") : "-";
-
-      const row = `
-        <tr class="${classRow}">
-          <td data-label="Bulan Ke">${i}</td>
-          <td data-label="Tanggal Jatuh Tempo">${jatuhTempo.toLocaleDateString("id-ID")}</td>
-          <td data-label="Angsuran Pokok">${Math.round(angsuranPokok).toLocaleString("id-ID")}</td>
-          <td data-label="Angsuran Bunga">${Math.round(angsuranBunga).toLocaleString("id-ID")}</td>
-          <td data-label="Total Angsuran">${Math.round(totalAngsuran).toLocaleString("id-ID")}</td>
-          <td data-label="Sisa Pokok Setelah Bayar">${Math.round(sisaSetelah).toLocaleString("id-ID")}</td>
-          <td data-label="Sisa Pinjaman (BRImo Anda)">${sisaBrimoDisplay}</td>
-        </tr>
-      `;
-
-      tbody.innerHTML += row;
-      sisaPokok = sisaSetelah;
-    }
-
-    // Penanganan Service Worker untuk PWA (Opsional, tapi bagus untuk masa depan)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(registration => {
-            console.log('Service Worker registered: ', registration);
-          })
-          .catch(registrationError => {
-            console.log('Service Worker registration failed: ', registrationError);
-          });
-      });
-    }
-  </script>
-</body>
-
-</html>
-
-
-
+      const sisaBrimoDisplay = sisaBrimoValue !== undefined ? sisaBrimoValue.toL
