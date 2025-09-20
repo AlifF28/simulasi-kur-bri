@@ -8,9 +8,8 @@
   <!-- Tautan ke manifest.json untuk PWA -->
   <link rel="manifest" href="manifest.json">
   
-  <!-- BARIS TAMBAHAN UNTUK FAVICON -->
+  <!-- Link untuk Favicon -->
   <link rel="icon" href="icon-192.png" type="image/png">
-  <!-- AKHIR BARIS TAMBAHAN -->
   
   <style>
     body {
@@ -144,7 +143,7 @@
       const row = `
         <tr class="${classRow}">
           <td data-label="Bulan Ke">${i}</td>
-          <td data-label="Tanggal Jatuh Tempo">${jatuhTempo.toLocaleDateString("id-ID")}</td>
+          <td data-label="Tanggal Jatuh Tempo">${jatuhTempo.toLocaleDateString("id-ID")}</td> <!-- INI YANG DIPERBAIKI: jatampo -> jatuhTempo -->
           <td data-label="Angsuran Pokok">${Math.round(angsuranPokok).toLocaleString("id-ID")}</td>
           <td data-label="Angsuran Bunga">${Math.round(angsuranBunga).toLocaleString("id-ID")}</td>
           <td data-label="Total Angsuran">${Math.round(totalAngsuran).toLocaleString("id-ID")}</td>
