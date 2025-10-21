@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulasi KUR BRI - 36 Bulan</title>
+  <title>Tabel Angsuran Pinjaman</title>
   
   <!-- Tautan ke manifest.json untuk PWA -->
   <link rel="manifest" href="manifest.json">
@@ -49,11 +49,9 @@
     td:nth-child(2), th:nth-child(2) {
       text-align: center;
     }
-    .sudah-jatuh-tempo {
-      background-color: #d4edda;
-    }
-    .belum-jatuh-tempo {
-      background-color: #f8d7da;
+    tr.total-row {
+      font-weight: bold;
+      background-color: #e9ecef;
     }
     @media (max-width: 768px) {
       table, thead, tbody, th, td, tr {
@@ -73,7 +71,7 @@
         border-bottom: 1px solid #eee;
         position: relative;
         padding-left: 50%;
-        text-align: left;
+        text-align: right; /* Mengubah dari left ke right agar konsisten */
         word-break: break-word;
       }
       td:before {
@@ -85,77 +83,146 @@
         white-space: nowrap;
         content: attr(data-label);
         font-weight: bold;
-        font-size: 0.8em;
+        text-align: left; /* Label tetap rata kiri */
       }
       td:first-child, td:nth-child(2) {
-        text-align: left;
+        text-align: right; /* Mengubah dari left ke right agar konsisten */
       }
     }
   </style>
 </head>
 <body>
-  <h2>Simulasi Angsuran KUR BRI (36 Bulan)</h2>
+  <h2>Simulasi Tabel Angsuran</h2>
   <p>Tanggal hari ini: <span id="tanggal-hari-ini"></span></p>
   <table>
     <thead>
       <tr>
-        <th>Bulan Ke</th>
-        <th>Tanggal Jatuh Tempo</th>
-        <th>Angsuran Pokok</th>
-        <th>Angsuran Bunga</th>
-        <th>Total Angsuran</th>
-        <th>Sisa Pokok Setelah Bayar</th>
-        <th>Sisa Pinjaman (BRImo Anda)</th>
+        <th>Bulan Ke-</th>
+        <th>Tanggal Jatuh Tempo (Contoh)</th>
+        <th>Sisa Pokok Sebelum Bayar (Rp)</th>
+        <th>Angsuran Pokok (Rp)</th>
+        <th>Angsuran Bunga (Rp)</th>
+        <th>Total Angsuran (Rp)</th>
+        <th>Sisa Pokok Setelah Bayar (Rp)</th>
       </tr>
     </thead>
-    <tbody id="tabel-body"></tbody>
+    <tbody id="tabel-body">
+        <!-- Data akan di-generate oleh JavaScript -->
+    </tbody>
+    <tfoot>
+        <tr class="total-row">
+            <td colspan="3">TOTAL</td>
+            <td id="total-pokok"></td>
+            <td id="total-bunga"></td>
+            <td id="total-angsuran"></td>
+            <td></td>
+        </tr>
+    </tfoot>
   </table>
 
   <script>
+    // Menampilkan tanggal hari ini
     const today = new Date();
-    document.getElementById("tanggal-hari-ini").textContent = today.toLocaleDateString("id-ID");
+    document.getElementById("tanggal-hari-ini").textContent = today.toLocaleDateString("id-ID", {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
 
-    const startDate = new Date(2025, 5, 6); // 6 Juni 2025 (bulan ke-5 = Juni)
-    const tenor = 36;
-    const totalPinjaman = 15000000;
-    const bungaFlat = 0.005; // 0.5% per bulan (6% per tahun)
-    const angsuranBunga = totalPinjaman * bungaFlat;
-    const totalAngsuran = 456400; // Contoh total angsuran Anda
-    const angsuranPokok = totalAngsuran - angsuranBunga;
-
-    const customBrimoBalances = {
-      4: 13462920, 
-    };
+    // Data dari tabel Anda
+    const amortizationData = [
+        { month: 1, principalBefore: 15000000, principalPayment: 381334, interestPayment: 75000, totalPayment: 456334, principalAfter: 14618666 },
+        { month: 2, principalBefore: 14618666, principalPayment: 383241, interestPayment: 73093, totalPayment: 456334, principalAfter: 14235425 },
+        { month: 3, principalBefore: 14235425, principalPayment: 385158, interestPayment: 71176, totalPayment: 456334, principalAfter: 13850267 },
+        { month: 4, principalBefore: 13850267, principalPayment: 387085, interestPayment: 69249, totalPayment: 456334, principalAfter: 13463182 },
+        { month: 5, principalBefore: 13463182, principalPayment: 389022, interestPayment: 67314, totalPayment: 456334, principalAfter: 13074162 },
+        { month: 6, principalBefore: 13074162, principalPayment: 390965, interestPayment: 65369, totalPayment: 456334, principalAfter: 12683197 },
+        { month: 7, principalBefore: 12683197, principalPayment: 392922, interestPayment: 63414, totalPayment: 456334, principalAfter: 12290277 },
+        { month: 8, principalBefore: 12290277, principalPayment: 394884, interestPayment: 6145, totalPayment: 456334, principalAfter: 11895393 },
+        { month: 9, principalBefore: 11895393, principalPayment: 396858, interestPayment: 59476, totalPayment: 456334, principalAfter: 11498535 },
+        { month: 10, principalBefore: 11498535, principalPayment: 398843, interestPayment: 57491, totalPayment: 456334, principalAfter: 11099692 },
+        { month: 11, principalBefore: 11099692, principalPayment: 400837, interestPayment: 55497, totalPayment: 456334, principalAfter: 10698855 },
+        { month: 12, principalBefore: 10698855, principalPayment: 402841, interestPayment: 53493, totalPayment: 456334, principalAfter: 10296014 },
+        { month: 13, principalBefore: 10296014, principalPayment: 404855, interestPayment: 51479, totalPayment: 456334, principalAfter: 9891159 },
+        { month: 14, principalBefore: 9891159, principalPayment: 40688, interestPayment: 49454, totalPayment: 456334, principalAfter: 9484279 },
+        { month: 15, principalBefore: 9484279, principalPayment: 408914, interestPayment: 4742, totalPayment: 456334, principalAfter: 9075365 },
+        { month: 16, principalBefore: 9075365, principalPayment: 410959, interestPayment: 45375, totalPayment: 456334, principalAfter: 8664406 },
+        { month: 17, principalBefore: 8664406, principalPayment: 413014, interestPayment: 4332, totalPayment: 456334, principalAfter: 8251392 },
+        { month: 18, principalBefore: 8251392, principalPayment: 41508, interestPayment: 41254, totalPayment: 456334, principalAfter: 7836312 },
+        { month: 19, principalBefore: 7836312, principalPayment: 417156, interestPayment: 39178, totalPayment: 456334, principalAfter: 7419156 },
+        { month: 20, principalBefore: 7419156, principalPayment: 419242, interestPayment: 37092, totalPayment: 456334, principalAfter: 6999914 },
+        { month: 21, principalBefore: 6999914, principalPayment: 421339, interestPayment: 34995, totalPayment: 456334, principalAfter: 6578575 },
+        { month: 22, principalBefore: 6578575, principalPayment: 423445, interestPayment: 32889, totalPayment: 456334, principalAfter: 6155130 },
+        { month: 23, principalBefore: 6155130, principalPayment: 425563, interestPayment: 30771, totalPayment: 456334, principalAfter: 5729567 },
+        { month: 24, principalBefore: 5729567, principalPayment: 427691, interestPayment: 28643, totalPayment: 456334, principalAfter: 5301876 },
+        { month: 25, principalBefore: 5301876, principalPayment: 429829, interestPayment: 26505, totalPayment: 456334, principalAfter: 4872047 },
+        { month: 26, principalBefore: 4872047, principalPayment: 431979, interestPayment: 24355, totalPayment: 456334, principalAfter: 4440068 },
+        { month: 27, principalBefore: 4440068, principalPayment: 434138, interestPayment: 22196, totalPayment: 456334, principalAfter: 4005930 },
+        { month: 28, principalBefore: 4005930, principalPayment: 436308, interestPayment: 20026, totalPayment: 456334, principalAfter: 3569622 },
+        { month: 29, principalBefore: 3569622, principalPayment: 438489, interestPayment: 17845, totalPayment: 456334, principalAfter: 3131133 },
+        { month: 30, principalBefore: 3131133, principalPayment: 44068, interestPayment: 15654, totalPayment: 456334, principalAfter: 2690453 },
+        { month: 31, principalBefore: 2690453, principalPayment: 442882, interestPayment: 13452, totalPayment: 456334, principalAfter: 2247571 },
+        { month: 32, principalBefore: 2247571, principalPayment: 445095, interestPayment: 11239, totalPayment: 456334, principalAfter: 1802476 },
+        { month: 33, principalBefore: 1802476, principalPayment: 447319, interestPayment: 9015, totalPayment: 456334, principalAfter: 1355157 },
+        { month: 34, principalBefore: 1355157, principalPayment: 449554, interestPayment: 678, totalPayment: 456334, principalAfter: 905603 },
+        { month: 35, principalBefore: 905603, principalPayment: 4518, interestPayment: 4534, totalPayment: 456334, principalAfter: 453803 },
+        { month: 36, principalBefore: 453803, principalPayment: 453803, interestPayment: 2269, totalPayment: 456072, principalAfter: 0 }
+    ];
 
     const tbody = document.getElementById("tabel-body");
-    let sisaPokok = totalPinjaman;
-
-    for (let i = 1; i <= tenor; i++) {
-      const jatuhTempo = new Date(startDate);
-      jatuhTempo.setMonth(startDate.getMonth() + i - 1);
-
-      const sisaSetelah = sisaPokok - angsuranPokok;
-      const classRow = jatuhTempo <= today ? "sudah-jatuh-tempo" : "belum-jatuh-tempo";
-
-      const sisaBrimoValue = customBrimoBalances[i];
-      const sisaBrimoDisplay = sisaBrimoValue !== undefined ? sisaBrimoValue.toLocaleString("id-ID") : "-";
-
-      const row = `
-        <tr class="${classRow}">
-          <td data-label="Bulan Ke">${i}</td>
-          <td data-label="Tanggal Jatuh Tempo">${jatuhTempo.toLocaleDateString("id-ID")}</td> <!-- INI YANG DIPERBAIKI: jatampo -> jatuhTempo -->
-          <td data-label="Angsuran Pokok">${Math.round(angsuranPokok).toLocaleString("id-ID")}</td>
-          <td data-label="Angsuran Bunga">${Math.round(angsuranBunga).toLocaleString("id-ID")}</td>
-          <td data-label="Total Angsuran">${Math.round(totalAngsuran).toLocaleString("id-ID")}</td>
-          <td data-label="Sisa Pokok Setelah Bayar">${Math.round(sisaSetelah).toLocaleString("id-ID")}</td>
-          <td data-label="Sisa Pinjaman (BRImo Anda)">${sisaBrimoDisplay}</td>
-        </tr>
-      `;
-
-      tbody.innerHTML += row;
-      sisaPokok = sisaSetelah;
+    const startDate = new Date(2025, 4, 6); // 6 Mei 2025
+    let totalPokok = 0;
+    let totalBunga = 0;
+    let totalAngsuran = 0;
+    
+    // Fungsi untuk memformat angka menjadi format Rupiah
+    function formatRupiah(number) {
+        return new Intl.NumberFormat('id-ID').format(number);
     }
 
+    // Baris awal (Bulan Ke-0)
+    const initialRow = `
+        <tr>
+            <td data-label="Bulan Ke-">0</td>
+            <td data-label="Tanggal Jatuh Tempo (Contoh)">${startDate.toLocaleDateString("id-ID")}</td>
+            <td data-label="Sisa Pokok Sebelum Bayar (Rp)">-</td>
+            <td data-label="Angsuran Pokok (Rp)">-</td>
+            <td data-label="Angsuran Bunga (Rp)">-</td>
+            <td data-label="Total Angsuran (Rp)">-</td>
+            <td data-label="Sisa Pokok Setelah Bayar (Rp)">${formatRupiah(15000000)}</td>
+        </tr>
+    `;
+    tbody.innerHTML += initialRow;
+
+    // Loop untuk mengisi sisa tabel
+    amortizationData.forEach(data => {
+        const jatuhTempo = new Date(startDate);
+        jatuhTempo.setMonth(startDate.getMonth() + data.month);
+
+        const row = `
+            <tr>
+                <td data-label="Bulan Ke-">${data.month}</td>
+                <td data-label="Tanggal Jatuh Tempo (Contoh)">${jatuhTempo.toLocaleDateString("id-ID")}</td>
+                <td data-label="Sisa Pokok Sebelum Bayar (Rp)">${formatRupiah(data.principalBefore)}</td>
+                <td data-label="Angsuran Pokok (Rp)">${formatRupiah(data.principalPayment)}</td>
+                <td data-label="Angsuran Bunga (Rp)">${formatRupiah(data.interestPayment)}</td>
+                <td data-label="Total Angsuran (Rp)">${formatRupiah(data.totalPayment)}</td>
+                <td data-label="Sisa Pokok Setelah Bayar (Rp)">${formatRupiah(data.principalAfter)}</td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+
+        // Menambahkan ke total
+        totalPokok += data.principalPayment;
+        totalBunga += data.interestPayment;
+        totalAngsuran += data.totalPayment;
+    });
+
+    // Menampilkan total di footer
+    document.getElementById("total-pokok").textContent = formatRupiah(Math.round(totalPokok));
+    document.getElementById("total-bunga").textContent = formatRupiah(Math.round(totalBunga));
+    document.getElementById("total-angsuran").textContent = formatRupiah(Math.round(totalAngsuran));
+
+
+    // Service worker untuk PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
