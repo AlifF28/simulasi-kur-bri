@@ -53,6 +53,9 @@
       font-weight: bold;
       background-color: #e9ecef;
     }
+    .sudah-jatuh-tempo {
+      background-color: #d4edda; /* Warna untuk tanggal yang sudah lewat */
+    }
     @media (max-width: 768px) {
       table, thead, tbody, th, td, tr {
         display: block;
@@ -71,7 +74,7 @@
         border-bottom: 1px solid #eee;
         position: relative;
         padding-left: 50%;
-        text-align: right; /* Mengubah dari left ke right agar konsisten */
+        text-align: right;
         word-break: break-word;
       }
       td:before {
@@ -83,10 +86,10 @@
         white-space: nowrap;
         content: attr(data-label);
         font-weight: bold;
-        text-align: left; /* Label tetap rata kiri */
+        text-align: left;
       }
       td:first-child, td:nth-child(2) {
-        text-align: right; /* Mengubah dari left ke right agar konsisten */
+        text-align: right;
       }
     }
   </style>
@@ -98,7 +101,7 @@
     <thead>
       <tr>
         <th>Bulan Ke-</th>
-        <th>Tanggal Jatuh Tempo (Contoh)</th>
+        <th>Tanggal Jatuh Tempo</th>
         <th>Sisa Pokok Sebelum Bayar (Rp)</th>
         <th>Angsuran Pokok (Rp)</th>
         <th>Angsuran Bunga (Rp)</th>
@@ -123,6 +126,7 @@
   <script>
     // Menampilkan tanggal hari ini
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Atur waktu ke awal hari untuk perbandingan yang akurat
     document.getElementById("tanggal-hari-ini").textContent = today.toLocaleDateString("id-ID", {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
@@ -182,7 +186,7 @@
     const initialRow = `
         <tr>
             <td data-label="Bulan Ke-">0</td>
-            <td data-label="Tanggal Jatuh Tempo (Contoh)">${startDate.toLocaleDateString("id-ID")}</td>
+            <td data-label="Tanggal Jatuh Tempo">${startDate.toLocaleDateString("id-ID")}</td>
             <td data-label="Sisa Pokok Sebelum Bayar (Rp)">-</td>
             <td data-label="Angsuran Pokok (Rp)">-</td>
             <td data-label="Angsuran Bunga (Rp)">-</td>
@@ -197,10 +201,13 @@
         const jatuhTempo = new Date(startDate);
         jatuhTempo.setMonth(startDate.getMonth() + data.month);
 
+        // Menentukan kelas CSS jika tanggal sudah lewat
+        const rowClass = jatuhTempo < today ? 'sudah-jatuh-tempo' : '';
+
         const row = `
-            <tr>
+            <tr class="${rowClass}">
                 <td data-label="Bulan Ke-">${data.month}</td>
-                <td data-label="Tanggal Jatuh Tempo (Contoh)">${jatuhTempo.toLocaleDateString("id-ID")}</td>
+                <td data-label="Tanggal Jatuh Tempo">${jatuhTempo.toLocaleDateString("id-ID")}</td>
                 <td data-label="Sisa Pokok Sebelum Bayar (Rp)">${formatRupiah(data.principalBefore)}</td>
                 <td data-label="Angsuran Pokok (Rp)">${formatRupiah(data.principalPayment)}</td>
                 <td data-label="Angsuran Bunga (Rp)">${formatRupiah(data.interestPayment)}</td>
